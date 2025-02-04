@@ -1,0 +1,14 @@
+numpy>=1.21.0
+opencv-python>=4.5.0
+redis>=4.5.0
+pyzmq>=24.0.0
+requests>=2.26.0
+
+[dev]
+pytest>=7.0.0
+pytest-asyncio>=0.20.0
+pytest-benchmark>=4.0.0
+pytest-cov>=4.0.0
+black>=22.0.0
+isort>=5.0.0
+mypy>=0.900
