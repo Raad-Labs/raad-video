@@ -1,33 +1,51 @@
 # RAAD Video
 
-A high-performance video loading library for machine learning, designed for efficient training data preparation.
+A high-performance video loading library for machine learning, designed for efficient training data preparation. RAAD Video provides state-of-the-art video processing capabilities with a focus on performance, flexibility, and ease of use.
 
 ## Features
 
-- Fast video frame extraction and preprocessing
-- Distributed processing support
-- Smart caching with Redis
-- Peer-to-peer sharing capabilities
-- Multiple ML framework support (PyTorch, TensorFlow, JAX)
-- Streaming optimization
-- Advanced augmentation pipeline
+- **High-Performance Processing**
+  - Fast video frame extraction and preprocessing
+  - Multi-threaded and distributed processing support
+  - Smart caching with Redis for improved throughput
+  - Memory-efficient streaming with adaptive buffering
+
+- **ML Framework Integration**
+  - Native support for PyTorch, TensorFlow, JAX, and more
+  - Optimized tensor conversions and memory management
+  - GPU acceleration support
+  - Configurable output formats and color spaces
+
+- **Advanced Capabilities**
+  - Sophisticated augmentation pipeline
+  - Real-time performance monitoring
+  - Auto-tuning for optimal performance
+  - Peer-to-peer sharing for distributed setups
 
 ## Installation
+
+RAAD Video requires Python 3.8 or later. Install via pip:
 
 ```bash
 pip install raad-video
 ```
 
-For development installation with all extras:
+For development installation with testing and code quality tools:
 ```bash
 pip install "raad-video[dev]"
 ```
+
+### System Requirements
+- Python 3.8+
+- OpenCV dependencies
+- Redis (optional, for distributed caching)
+- CUDA-compatible GPU (optional, for GPU acceleration)
 
 ## Quick Start
 
 ```python
 from raad import VideoDataLoader, VideoCatalog
-from raad.config import ProcessingMode, StreamingConfig
+from raad.config import ProcessingMode, StreamingConfig, FrameFormat
 
 # Create a catalog of your videos
 catalog = VideoCatalog()
@@ -38,15 +56,20 @@ catalog.add_video("video2.mp4", categories=["validation"])
 loader = VideoDataLoader(
     catalog=catalog,
     processing_mode=ProcessingMode.MULTI_THREAD,
+    frame_format=FrameFormat.TORCH,  # Output PyTorch tensors
     streaming_config=StreamingConfig(
         mode="adaptive",
         buffer_size=1000
-    )
+    ),
+    target_size=(224, 224),  # Resize frames
+    normalize=True,          # Normalize pixel values
+    device="cuda"          # Use GPU if available
 )
 
 # Get frames for training
 for frames in loader.get_dataset_iterator("training"):
     # frames will be preprocessed and ready for your model
+    # Shape: (batch_size, channels, height, width)
     model.train(frames)
 ```
 
@@ -57,12 +80,16 @@ for frames in loader.get_dataset_iterator("training"):
 ```python
 from raad.config import DistributedConfig
 
+# Setup distributed processing across multiple nodes
 loader = VideoDataLoader(
     catalog=catalog,
     processing_mode=ProcessingMode.DISTRIBUTED,
     distributed_config=DistributedConfig(
+        enabled=True,
         num_nodes=4,
-        node_rank=0
+        node_rank=0,
+        master_addr='10.0.0.1',
+        master_port=29500
     )
 )
 ```
@@ -73,32 +100,75 @@ loader = VideoDataLoader(
 from raad.augmentation import (
     RandomBrightness,
     RandomContrast,
-    RandomFlip
+    RandomFlip,
+    RandomRotation,
+    ColorJitter
 )
 
+# Create a sophisticated augmentation pipeline
 loader = VideoDataLoader(
     catalog=catalog,
     augmentations=[
         RandomBrightness(0.2),
         RandomContrast(0.2),
-        RandomFlip(p=0.5)
+        RandomFlip(p=0.5),
+        RandomRotation(degrees=15),
+        ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1)
     ]
 )
 ```
 
-### Caching Configuration
+### Performance Optimization
 
 ```python
-from raad.config import CacheConfig
+from raad.config import CacheConfig, StreamingConfig
 
+# Configure caching and streaming for optimal performance
 loader = VideoDataLoader(
     catalog=catalog,
     cache_config=CacheConfig(
         enabled=True,
         policy="lru",
-        max_size_gb=100
-    )
+        max_size_gb=100,
+        persistent=True,
+        compression="lz4"
+    ),
+    streaming_config=StreamingConfig(
+        mode="adaptive",
+        buffer_size=1000,
+        max_latency=0.1,
+        drop_threshold=0.8
+    ),
+    auto_tune=True,  # Enable automatic performance tuning
+    monitoring_interval=1.0,  # Monitor performance every second
+    export_metrics=True
 )
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Memory Usage**
+   - Use `streaming_config` with appropriate `buffer_size`
+   - Enable frame dropping with `drop_threshold` if needed
+   - Consider using persistent caching
+
+2. **Performance**
+   - Enable `auto_tune` for automatic optimization
+   - Use appropriate `processing_mode` for your setup
+   - Monitor performance with `export_metrics=True`
+
+3. **GPU Issues**
+   - Ensure CUDA is properly installed
+   - Set appropriate `device` and `batch_size`
+   - Monitor GPU memory usage
+
+### Getting Help
+
+- Open an issue on GitHub
+- Check the API documentation
+- Join our community on Discord
 ```
 
 ## Performance Tips

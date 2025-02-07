@@ -25,18 +25,46 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class VideoLoadError(Exception):
-    """Raised when there's an error loading a video."""
+    """Raised when there's an error loading or processing a video.
+    
+    This exception is raised in cases such as:
+    - File not found or inaccessible
+    - Corrupted video file
+    - Insufficient memory for processing
+    - GPU errors during processing
+    - Network errors in distributed mode
+    """
     pass
 
 class ProcessingMode(Enum):
-    """Video processing modes."""
+    """Video processing modes for different performance requirements.
+    
+    Modes:
+        SINGLE_PROCESS: Sequential processing in a single process. Good for debugging.
+        MULTI_THREAD: Parallel processing using threads. Best for I/O-bound tasks.
+        MULTI_PROCESS: Parallel processing using multiple processes. Best for CPU-bound tasks.
+        DISTRIBUTED: Distributed processing across multiple nodes. Best for large-scale processing.
+    """
     SINGLE_PROCESS = auto()
     MULTI_THREAD = auto()
     MULTI_PROCESS = auto()
     DISTRIBUTED = auto()
 
 class FrameFormat(Enum):
-    """Supported frame formats for different ML frameworks."""
+    """Supported frame formats for different ML frameworks.
+    
+    Formats:
+        NUMPY: Standard NumPy array format (H, W, C)
+        TORCH: PyTorch tensor format (C, H, W)
+        TENSORFLOW: TensorFlow tensor format (H, W, C)
+        JAX: JAX DeviceArray format
+        PADDLE: PaddlePaddle tensor format
+        ONNX: ONNX tensor format
+        PIL: PIL Image format
+    
+    Note: All formats maintain consistent channel ordering (RGB/BGR) as specified
+    in the color_space parameter.
+    """
     NUMPY = auto()
     TORCH = auto()
     TENSORFLOW = auto()
@@ -63,7 +91,21 @@ class StreamingMode(Enum):
 
 @dataclass
 class ProcessingMetrics:
-    """Metrics for monitoring processing performance."""
+    """Metrics for monitoring video processing performance.
+    
+    Attributes:
+        total_frames: Total number of frames in the video(s)
+        processed_frames: Number of successfully processed frames
+        dropped_frames: Number of frames dropped due to performance constraints
+        avg_processing_time: Average time (seconds) to process a single frame
+        peak_memory_usage: Peak memory usage in bytes during processing
+        cache_hits: Number of successful cache retrievals
+        cache_misses: Number of failed cache retrievals
+        start_time: Processing start time (Unix timestamp)
+    
+    Note: These metrics are continuously updated during processing and can be
+    exported for monitoring and optimization purposes.
+    """
     total_frames: int = 0
     processed_frames: int = 0
     dropped_frames: int = 0

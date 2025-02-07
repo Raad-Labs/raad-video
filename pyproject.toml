@@ -7,17 +7,33 @@ name = "raad-video"
 description = "High-performance video loading library for machine learning"
 readme = "README.md"
 requires-python = ">=3.8"
-keywords = ["video", "machine learning", "data loading", "deep learning"]
+keywords = [
+    "video", 
+    "machine learning", 
+    "data loading", 
+    "deep learning",
+    "video processing",
+    "distributed computing",
+    "gpu acceleration"
+]
 license = {text = "MIT"}
+authors = [
+    {name = "RAAD Labs Team", email = "team@raad.ai"}
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: OS Independent",
 ]
 dependencies = [
     "numpy>=1.21.0",
@@ -25,6 +41,9 @@ dependencies = [
     "redis>=4.5.0",
     "pyzmq>=24.0.0",
     "requests>=2.26.0",
+    "pillow>=9.0.0",
+    "tqdm>=4.65.0",
+    "psutil>=5.9.0",
 ]
 dynamic = ["version"]
 
@@ -34,9 +53,31 @@ dev = [
     "pytest-asyncio>=0.20.0",
     "pytest-benchmark>=4.0.0",
     "pytest-cov>=4.0.0",
+    "pytest-xdist>=3.3.0",  # Parallel testing
     "black>=22.0.0",
     "isort>=5.0.0",
     "mypy>=0.900",
+    "ruff>=0.1.0",  # Fast Python linter
+    "pre-commit>=3.3.0",
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=1.3.0",
+]
+
+ml = [
+    "torch>=2.0.0",
+    "tensorflow>=2.13.0",
+    "jax>=0.4.13",
+    "jaxlib>=0.4.13",
+]
+
+dist = [
+    "ray>=2.6.0",
+    "dask>=2023.9.0",
+]
+
+aws = [
+    "boto3>=1.28.0",
+    "s3fs>=2023.9.0",
 ]
 
 [tool.setuptools]
