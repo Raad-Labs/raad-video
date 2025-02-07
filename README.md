@@ -1,6 +1,6 @@
 # RAAD Video
 
-A high-performance video loading library for machine learning, designed for efficient training data preparation. RAAD Video provides state-of-the-art video processing capabilities with a focus on performance, flexibility, and ease of use.
+A high-performance video loading library for machine learning, designed for efficient training data preparation.
 
 ## Features
 
