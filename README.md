@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="https://pbs.twimg.com/profile_banners/5385912/1737222476/1500x500" alt="RAAD Video Banner" width="100%">
+</div>
+
 # RAAD Video
 
 A high-performance video loading library for machine learning, designed for efficient training data preparation.
